@@ -14,10 +14,14 @@ pub struct World {
 }
 
 impl World {
-    // TODO: new()
+    // TODO: set length and width
+    pub fn new() -> World {
+        World { cells: [[0_i32; SIDE_LENGTH]; SIDE_LENGTH] }
+    }
+
     // TODO: load() and save()
     pub fn evolve(&self) -> World {
-        let mut new_world = World { cells: [[0_i32; SIDE_LENGTH]; SIDE_LENGTH] };
+        let mut new_world = World::new();
         let s = SIDE_LENGTH as i32;
 
         // Compute new world cells
@@ -68,7 +72,7 @@ impl std::fmt::Display for World {
         let mut output = String::new();
         for row in self.cells.into_iter() {
             for cell in row.into_iter() {
-                output.push_str( match cell {
+                output.push_str(match cell {
                     &ALIVE => ALIVE_CHAR,
                     &DEAD => DEAD_CHAR,
                     &_ => INVALID_CHAR,
@@ -89,24 +93,24 @@ mod tests {
     fn test_fmt() {
         let blinker_generation_0 = World {
             cells: [[0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0],
-                [0, 1, 1, 1, 0],
-                [0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0]],
+                    [0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0]],
         };
 
         assert_eq!(format!("{}", blinker_generation_0),
-        "-----\n-----\n-###-\n-----\n-----\n");
+                   "-----\n-----\n-###-\n-----\n-----\n");
 
         let invalid_gen_0 = World {
             cells: [[0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0],
-                [0, 1, 1, 1, 0],
-                [0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 2]],
+                    [0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 2]],
         };
         assert_eq!(format!("{}", invalid_gen_0),
-        "-----\n-----\n-###-\n-----\n----x\n");
+                   "-----\n-----\n-###-\n-----\n----x\n");
     }
 
     #[test]
@@ -114,18 +118,18 @@ mod tests {
         // Blinker
         let blinker_generation_0 = World {
             cells: [[0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0],
-                [0, 1, 1, 1, 0],
-                [0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0]],
+                    [0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0]],
         };
 
         let blinker_generation_1 = World {
             cells: [[0, 0, 0, 0, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 0, 0, 0]],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 0, 0, 0]],
         };
 
         assert_eq!(blinker_generation_0.evolve(), blinker_generation_1);
@@ -134,10 +138,10 @@ mod tests {
         // Boat
         let boat_generation_0 = World {
             cells: [[0, 0, 0, 0, 0],
-                [0, 1, 1, 0, 0],
-                [0, 1, 0, 1, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 0, 0, 0]],
+                    [0, 1, 1, 0, 0],
+                    [0, 1, 0, 1, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 0, 0, 0]],
         };
 
         assert_eq!(boat_generation_0.evolve(), boat_generation_0);
