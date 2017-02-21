@@ -3,6 +3,7 @@ const ALIVE: i32 = 1;
 const DEAD: i32 = 0;
 static ALIVE_CHAR: &'static str = "#";
 static DEAD_CHAR: &'static str = "-";
+static INVALID_CHAR: &'static str = "x";
 
 #[derive(Debug)]
 struct World {
@@ -33,14 +34,18 @@ impl World {
                     self.cells[next_r][prev_c] + self.cells[next_r][c] + self.cells[next_r][next_c];
 
                 match cell {
-                    &DEAD => match num_living_neighbors {
-                        3 => new_world.cells[r][c] = ALIVE,     // New life
-                        _ => new_world.cells[r][c] = DEAD,      // Nothing
-                    },
-                    &ALIVE => match num_living_neighbors {
-                        2 | 3 => new_world.cells[r][c] = ALIVE, // Continued life
-                        _ => new_world.cells[r][c] = DEAD,      // Overpopulation
-                    },
+                    &DEAD => {
+                        match num_living_neighbors {
+                            3 => new_world.cells[r][c] = ALIVE,     // New life
+                            _ => new_world.cells[r][c] = DEAD,      // Nothing
+                        }
+                    }
+                    &ALIVE => {
+                        match num_living_neighbors {
+                            2 | 3 => new_world.cells[r][c] = ALIVE, // Continued life
+                            _ => new_world.cells[r][c] = DEAD,      // Overpopulation
+                        }
+                    }
                     &_ => continue, // TODO: Handle invalid data.
                 }
             }
@@ -55,7 +60,23 @@ impl PartialEq for World {
         self.cells == other.cells
     }
 }
-// TODO: impl std::fmt::Display
+
+impl std::fmt::Display for World {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+        let mut output = String::new();
+        for row in self.cells.into_iter() {
+            for cell in row.into_iter() {
+                output.push_str( match cell {
+                   &ALIVE => ALIVE_CHAR,
+                   &DEAD => DEAD_CHAR,
+                   &_ => INVALID_CHAR,
+                });
+            }
+            output.push_str("\n");
+        }
+        write!(formatter, "{}", output)
+    }
+}
 
 fn main() {
     // TODO: Command line interface
@@ -68,26 +89,46 @@ mod tests {
     use super::World;
 
     #[test]
+    fn test_fmt() {
+        let blinker_generation_0 = World {
+            cells: [[0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0]],
+        };
+
+        assert_eq!(format!("{}", blinker_generation_0),
+                   "-----\n-----\n-###-\n-----\n-----\n");
+
+        let invalid_gen_0 = World {
+            cells: [[0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 2]],
+        };
+        assert_eq!(format!("{}", invalid_gen_0),
+                   "-----\n-----\n-###-\n-----\n----x\n");
+    }
+
+    #[test]
     fn test_evolve() {
         // Blinker
         let blinker_generation_0 = World {
-            cells: [
-                [0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0],
-                [0, 1, 1, 1, 0],
-                [0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0],
-            ]
+            cells: [[0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 1, 1, 1, 0],
+                    [0, 0, 0, 0, 0],
+                    [0, 0, 0, 0, 0]],
         };
 
         let blinker_generation_1 = World {
-            cells: [
-                [0, 0, 0, 0, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 0, 0, 0],
-            ]
+            cells: [[0, 0, 0, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 0, 0, 0]],
         };
 
         assert_eq!(blinker_generation_0.evolve(), blinker_generation_1);
@@ -95,16 +136,13 @@ mod tests {
 
         // Boat
         let boat_generation_0 = World {
-            cells: [
-                [0, 0, 0, 0, 0],
-                [0, 1, 1, 0, 0],
-                [0, 1, 0, 1, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 0, 0, 0],
-            ]
+            cells: [[0, 0, 0, 0, 0],
+                    [0, 1, 1, 0, 0],
+                    [0, 1, 0, 1, 0],
+                    [0, 0, 1, 0, 0],
+                    [0, 0, 0, 0, 0]],
         };
 
         assert_eq!(boat_generation_0.evolve(), boat_generation_0);
     }
 }
-
