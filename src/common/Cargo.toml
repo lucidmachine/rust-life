@@ -11,3 +11,7 @@ path = "lib.rs"
 
 [dev-dependencies]
 bencher = "0.1"
+
+[[bench]]
+name = "world"
+harness = false
