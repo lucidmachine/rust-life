@@ -1,12 +1,11 @@
 [package]
-name = "rust-life"
-version = "0.1.0"
+name = "common"
+version = "0.0.0"
 authors = ["Eric Slenk <slenkeri@anr.msu.edu>"]
 
-[workspace]
-
-[dependencies.common]
-path = "src/common"
+[lib]
+name = "common"
+path = "lib.rs"
 
 [dependencies]
 

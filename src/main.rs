@@ -1,6 +1,6 @@
-mod world;
+extern crate common;
 
-use world::World;
+use common::world::World;
 
 fn main() {
     // TODO: Command line interface
