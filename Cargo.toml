@@ -4,3 +4,6 @@ version = "0.1.0"
 authors = ["Eric Slenk <slenkeri@anr.msu.edu>"]
 
 [dependencies]
+
+[dev-dependencies]
+bencher = "0.1"
