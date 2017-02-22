@@ -19,6 +19,18 @@ impl World {
         World { cells: [[0_i32; SIDE_LENGTH]; SIDE_LENGTH] }
     }
 
+    pub fn cells_valid(cells: [[i32; SIDE_LENGTH]; SIDE_LENGTH]) -> bool {
+        for row in 0..SIDE_LENGTH {
+            for column in 0..SIDE_LENGTH {
+                match cells[row][column] {
+                    0 | 1 => continue,
+                    _ => return false,
+                }
+            }
+        }
+        true
+    }
+
     // TODO: load() and save()
     pub fn evolve(&self) -> World {
         let mut new_world = World::new();
@@ -146,4 +158,16 @@ mod tests {
 
         assert_eq!(boat_generation_0.evolve(), boat_generation_0);
     }
+
+    #[test]
+    fn test_cells_valid() {
+        let valid_cells =
+            [[0, 0, 0, 0, 0], [0, 1, 1, 0, 0], [0, 1, 0, 1, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0]];
+        assert_eq!(World::cells_valid(valid_cells), true);
+
+        let invalid_cells =
+            [[0, 0, 0, 0, 0], [0, 1, 1, 0, 0], [0, 1, 0, 1, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 2]];
+        assert_eq!(World::cells_valid(invalid_cells), false);
+    }
+
 }
