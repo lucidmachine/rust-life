@@ -14,7 +14,7 @@ fn main() {
                 [0, 0, 0, 0, 0]],
     };
 
-    for i in 0..10 {
+    for i in 0..1000 {
         println!("== Generation {} ==", i);
         println!("{}", world);
         world = world.evolve();
